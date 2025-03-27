@@ -5,4 +5,4 @@ class bankAccountType:
 
     SAVING_LABEL = "Savings Account"
     CURRENT_LABEL = "Current Account"
-    BACK_LABEL = "Exit"
+    BACK_LABEL = "Return"

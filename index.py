@@ -13,12 +13,14 @@ class Bank:
     CREATE_ACCOUNT = 1
     OPEN_ACCOUNT = 2
 
+    MAIN_OPTION_MENU = {
+            CREATE_ACCOUNT : "Create Account",
+            OPEN_ACCOUNT : "Enter Account"
+        }
+
     def __init__(self):
-        self._mainOption=None
-        self._accno=None
+        self._mainOption= self._accno= self._firstname = self._lastname = None
         self._account = {}
-        self._firstname = None
-        self._lastname = None
         self._continue = True
         self.main()
 
@@ -45,7 +47,7 @@ class Bank:
 
                         savings = Savings(self._accno)
                         savings._createAccount()
-                        
+                            
                         current = Currents(self._accno)
                         current._createAccount()
 
@@ -65,32 +67,36 @@ class Bank:
         ClearScreen._clear_screen(self._account)
         self._mainOption= self._firstname = self._lastname = self._accno = None
         self._account = {}
-        options = {
-            self.CREATE_ACCOUNT : "Create Account",
-            self.OPEN_ACCOUNT : "Enter Account"
-        }
-        return Form._input_form("Choose type of transaction:", InputType.NUMBER, 1 ,options)
+
+        return Form._input_form("Choose type of transaction:", InputType.NUMBER, 1 ,self.MAIN_OPTION_MENU)
 
     def __transaction_savings(self, savings:Savings)->None:
         while True:
             res1 = Menu._savings_menu()
             if res1 == savingMenuType.DEPOSIT:
-                ## TODO ##
                 ClearScreen._clear_screen(self._account)
                 amount = Form._input_form("Enter the amount:", InputType.CURRENCY)
-                savings._deposit(amount)
+                deposit_res = savings._deposit(amount)
 
                 ClearScreen._clear_screen(self._account)
-                bal = f"  Your Remaing Balance: {savings._balance(): .2f}  " 
-                print(f"{bal.center(50,'*')} \n")
+                if deposit_res[savings.STATUS]:
+                    self._show_savings_balance(savings)
+                else:
+                    msg = f"  {deposit_res[savings.MESSAGE]} " 
+                    print(f"{msg.center(50,'*')} \n")
 
             elif res1 == savingMenuType.WITHDRAWAL:
                 ### TODO ###
                 ClearScreen._clear_screen(self._account)
                 amount = Form._input_form("Enter the amount:", InputType.CURRENCY)
-                savings._withdrawal(amount)
-
-                self._show_savings_balance(savings)
+                ClearScreen._clear_screen(self._account)
+               
+                res:Savings.RESPOSNE = savings._withdrawal(amount)
+                if res[savings.STATUS] :
+                    self._show_savings_balance(savings)
+                else:
+                    msg = f"  {res[savings.MESSAGE]} " 
+                    print(f"{msg.center(50,'*')} \n")
 
             elif res1 == savingMenuType.BALANCE:
                 self._show_savings_balance(savings)
@@ -146,9 +152,12 @@ class Bank:
   
     def _show_savings_balance(self, Savings: Savings):
         ClearScreen._clear_screen(self._account)
-        bal = f"  Your Remaing Balance: {Savings._balance(): .2f}  " 
-        print(f"{bal.center(50,'*')} \n")
-        pass
+        res = Savings._balance()
+        if res[Savings.STATUS]:
+            msg = f"  Your Remaing Balance: ${res[Savings.RESPONSE]:0,.2f}  "
+        else:
+            msg =f"  {res[Savings.MESSAGE]}  "
+        print(f"{msg.center(50,'*')} \n")
 
 bank = Bank()
 

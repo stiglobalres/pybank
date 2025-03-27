@@ -7,4 +7,4 @@ class savingMenuType:
     DEPOSIT_LABEL = "Deposit"
     WITHDRAWAL_LABEL = "Withdrawal"
     BALANCE_LABEL = "Show Balance"
-    BACK_LABEL = "Back"
+    BACK_LABEL = "Return"
